@@ -34,16 +34,16 @@ const App: React.FC = () => {
         userPoolClientId: import.meta.env.VITE_APP_USER_POOL_CLIENT_ID,
         loginWith: {
           oauth: {
-            domain: import.meta.env.VITE_APP_COGNITO_DOMAIN,
-            scopes: ['openid', 'email'],
-            redirectSignIn: [import.meta.env.VITE_APP_REDIRECT_SIGNIN_URL],
-            redirectSignOut: [import.meta.env.VITE_APP_REDIRECT_SIGNOUT_URL],
-            responseType: 'code',
-          },
-        },
-      },
-    },
-  });
+            domain: 'HOSTED_UI_DOMAIN.auth.us-east-1.amazoncognito.com',
+            scopes: ['openid', 'email', 'aws.cognito.signin.user.admin'], 
+            redirectSignIn: ['REDIRECT_URL'], 
+            redirectSignOut: ['SIGN_OUT_URL'], 
+            responseType: 'code' 
+          }
+        }
+      }
+    }
+});
 
   I18n.putVocabularies(translations);
   I18n.setLanguage(i18n.language);
