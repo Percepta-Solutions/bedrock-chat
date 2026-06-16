@@ -208,6 +208,11 @@ export class Auth extends Construct {
       }
     );
 
+    const perceptaGroup = new CfnUserPoolGroup(this, "PerceptaGroup", {
+      groupName: "Percepta",
+      userPoolId: userPool.userPoolId,
+    });
+
     if (props.autoJoinUserGroups.length >= 1) {
       /**
        * Create a Cognito trigger to add a new user to the group specified with `autoJoinUserGroups`.
