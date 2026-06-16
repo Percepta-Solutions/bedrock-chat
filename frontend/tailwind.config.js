@@ -44,7 +44,7 @@ export default {
           dark: '#151515',
         },
         'aws-paper': {
-          light: '#68878f',
+          light: '#f1f3f3',
           dark: '#212121',
         },
         red: '#dc2626',
