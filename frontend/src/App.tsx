@@ -34,7 +34,7 @@ const App: React.FC = () => {
         userPoolClientId: import.meta.env.VITE_APP_USER_POOL_CLIENT_ID,
         loginWith: {
           oauth: {
-            domain: 'HOSTED_UI_DOMAIN.auth.us-east-1.amazoncognito.com',
+            domain: import.meta.env.VITE_APP_COGNITO_DOMAIN,
             scopes: ['openid', 'email', 'aws.cognito.signin.user.admin'], 
             redirectSignIn: [import.meta.env.VITE_APP_REDIRECT_SIGNIN_URL],
             redirectSignOut: [import.meta.env.VITE_APP_REDIRECT_SIGNOUT_URL],
