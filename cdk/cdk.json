@@ -86,7 +86,7 @@
     "claude-v4.6-sonnet",
     "claude-v4.6-opus",
     "gpt-oss-20b",
-    "gpt-oss-120b",],
+    "gpt-oss-120b"],
     "defaultModel": "claude-v4.7-opus",
     "tokenValidMinutes": 30,
     "alternateDomainName": "",
