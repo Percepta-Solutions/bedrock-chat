@@ -61,8 +61,12 @@
       "8000:0000:0000:0000:0000:0000:0000:0000/1"
     ],
     "allowedCountries": [],
-    "identityProviders": [],
-    "userPoolDomainPrefix": "",
+    "identityProviders": [{
+    "service": "oidc",
+    "serviceName": "PingSSO",
+    "secretName": "bedrock-chat/ping-sso"
+  }],
+    "userPoolDomainPrefix": "percdev-bedrockchatv3",
     "allowedSignUpEmailDomains": [],
     "autoJoinUserGroups": ["Percepta"],
     "selfSignUpEnabled": false,
