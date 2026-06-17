@@ -61,6 +61,7 @@ BASE_MODEL_IDS = {
     "claude-v4.1-opus": "anthropic.claude-opus-4-1-20250805-v1:0",
     "claude-v4.5-opus": "anthropic.claude-opus-4-5-20251101-v1:0",
     "claude-v4.6-opus": "anthropic.claude-opus-4-6-v1",
+    "claude-v4.7-opus": "anthropic.claude-opus-4-7",
     "claude-v4-sonnet": "anthropic.claude-sonnet-4-20250514-v1:0",
     "claude-v4.5-sonnet": "anthropic.claude-sonnet-4-5-20250929-v1:0",
     "claude-v4.6-sonnet": "anthropic.claude-sonnet-4-6",
@@ -172,6 +173,34 @@ GLOBAL_INFERENCE_PROFILES = {
             "ap-northeast-1",
         ]
     },
+    "claude-v4.7-opus": {
+        "supported_regions": [
+            "us-west-2",
+            "us-west-1",
+            "us-east-2",
+            "us-east-1",
+            "sa-east-1",
+            "eu-west-3",
+            "eu-west-2",
+            "eu-west-1",
+            "eu-south-2",
+            "eu-south-1",
+            "eu-north-1",
+            "eu-central-2",
+            "eu-central-1",
+            "ca-central-1",
+            "ca-west-1",
+            "ap-southeast-4",
+            "ap-southeast-3",
+            "ap-southeast-2",
+            "ap-southeast-1",
+            "ap-south-2",
+            "ap-south-1",
+            "ap-northeast-3",
+            "ap-northeast-2",
+            "ap-northeast-1",
+        ]
+    },
     "claude-v4-sonnet": {
         "supported_regions": [
             "us-west-2",
@@ -246,6 +275,28 @@ REGIONAL_INFERENCE_PROFILES = {
         "supported_regions": {"us-east-1": "us", "us-east-2": "us", "us-west-2": "us"}
     },
     # "claude-v4.5-opus" only available on global endpoint
+    "claude-v4.7-opus": {
+        "supported_regions": {
+            "us-east-1": "us",
+            "us-east-2": "us",
+            "us-west-1": "us",
+            "us-west-2": "us",
+            "ca-central-1": "us",
+            "ca-west-1": "us",
+            "eu-central-1": "eu",
+            "eu-central-2": "eu",
+            "eu-north-1": "eu",
+            "eu-south-1": "eu",
+            "eu-south-2": "eu",
+            "eu-west-1": "eu",
+            "eu-west-2": "eu",
+            "eu-west-3": "eu",
+            "ap-northeast-1": "jp",
+            "ap-northeast-3": "jp",
+            "ap-southeast-2": "au",
+            "ap-southeast-4": "au",
+        }
+    },
     "claude-v4.6-opus": {
         "supported_regions": {
             "us-east-1": "us",
@@ -514,18 +565,20 @@ def is_tooluse_supported(model: type_model_name) -> bool:
 
 
 def is_adaptive_thinking_model(model: type_model_name) -> bool:
-    """Claude 4.6 models use adaptive thinking instead of extended thinking with budget_tokens."""
+    """Claude 4.6+ models use adaptive thinking instead of extended thinking with budget_tokens."""
     return model in [
         "claude-v4.6-opus",
         "claude-v4.6-sonnet",
+        "claude-v4.7-opus",
     ]
 
 
 def is_prefill_supported(model: type_model_name) -> bool:
-    """Claude 4.6 models do not support assistant message prefilling."""
+    """Claude 4.6+ models do not support assistant message prefilling."""
     return model not in [
         "claude-v4.6-opus",
         "claude-v4.6-sonnet",
+        "claude-v4.7-opus",
     ]
 
 
@@ -534,9 +587,31 @@ def is_specify_both_temperature_and_top_p_supported(model: type_model_name) -> b
         "claude-v4.1-opus",
         "claude-v4.5-opus",
         "claude-v4.6-opus",
+        "claude-v4.7-opus",
         "claude-v4.5-sonnet",
         "claude-v4.6-sonnet",
         "claude-v4.5-haiku",
+    ]
+
+
+def is_top_k_supported(model: type_model_name) -> bool:
+    """Claude Opus 4.7+ deprecates top_k parameter."""
+    return model not in [
+        "claude-v4.7-opus",
+    ]
+
+
+def is_top_p_supported(model: type_model_name) -> bool:
+    """Claude Opus 4.7+ deprecates top_p parameter."""
+    return model not in [
+        "claude-v4.7-opus",
+    ]
+
+
+def is_temperature_supported(model: type_model_name) -> bool:
+    """Claude Opus 4.7+ deprecates temperature parameter."""
+    return model not in [
+        "claude-v4.7-opus",
     ]
 
 
@@ -549,6 +624,7 @@ def is_prompt_caching_supported(
             "claude-v4.1-opus",
             "claude-v4.5-opus",
             "claude-v4.6-opus",
+            "claude-v4.7-opus",
             "claude-v4-sonnet",
             "claude-v4.5-sonnet",
             "claude-v4.6-sonnet",
@@ -564,6 +640,7 @@ def is_prompt_caching_supported(
             "claude-v4.1-opus",
             "claude-v4.5-opus",
             "claude-v4.6-opus",
+            "claude-v4.7-opus",
             "claude-v4-sonnet",
             "claude-v4.5-sonnet",
             "claude-v4.6-sonnet",
@@ -961,12 +1038,6 @@ def generation_params_to_converse_configuration(
                 converse_configuration = {
                     "inferenceConfig": {
                         "maxTokens": max_tokens,
-                        "temperature": 1.0,
-                        "topP": (
-                            generation_params.top_p
-                            if generation_params
-                            else DEFAULT_GENERATION_CONFIG["top_p"]
-                        ),
                         "stopSequences": (
                             generation_params.stop_sequences
                             if (
@@ -983,6 +1054,16 @@ def generation_params_to_converse_configuration(
                         },
                     },
                 }
+                if is_temperature_supported(model):
+                    converse_configuration["inferenceConfig"]["temperature"] = 1.0
+
+                if is_top_p_supported(model):
+                    converse_configuration["inferenceConfig"]["topP"] = (
+                        generation_params.top_p
+                        if generation_params
+                        else DEFAULT_GENERATION_CONFIG["top_p"]
+                    )
+
             else:
                 budget_tokens = (
                     generation_params.reasoning_params.budget_tokens
@@ -1000,12 +1081,6 @@ def generation_params_to_converse_configuration(
                 converse_configuration = {
                     "inferenceConfig": {
                         "maxTokens": max_tokens,
-                        "temperature": 1.0,  # Force temperature to 1.0 when reasoning is enabled
-                        "topP": (
-                            generation_params.top_p
-                            if generation_params
-                            else DEFAULT_GENERATION_CONFIG["top_p"]
-                        ),
                         "stopSequences": (
                             generation_params.stop_sequences
                             if (
@@ -1024,6 +1099,15 @@ def generation_params_to_converse_configuration(
                         },
                     },
                 }
+                if is_temperature_supported(model):
+                    converse_configuration["inferenceConfig"]["temperature"] = 1.0
+
+                if is_top_p_supported(model):
+                    converse_configuration["inferenceConfig"]["topP"] = (
+                        generation_params.top_p
+                        if generation_params
+                        else DEFAULT_GENERATION_CONFIG["top_p"]
+                    )
 
         else:
             converse_configuration = {
@@ -1032,16 +1116,6 @@ def generation_params_to_converse_configuration(
                         generation_params.max_tokens
                         if generation_params
                         else DEFAULT_GENERATION_CONFIG["max_tokens"]
-                    ),
-                    "temperature": (
-                        generation_params.temperature
-                        if generation_params
-                        else DEFAULT_GENERATION_CONFIG["temperature"]
-                    ),
-                    "topP": (
-                        generation_params.top_p
-                        if generation_params
-                        else DEFAULT_GENERATION_CONFIG["top_p"]
                     ),
                     "stopSequences": (
                         generation_params.stop_sequences
@@ -1053,14 +1127,29 @@ def generation_params_to_converse_configuration(
                         else DEFAULT_GENERATION_CONFIG.get("stop_sequences", [])
                     ),
                 },
-                "additionalModelRequestFields": {
-                    "top_k": (
-                        generation_params.top_k
-                        if generation_params
-                        else DEFAULT_GENERATION_CONFIG["top_k"]
-                    ),
-                },
+                "additionalModelRequestFields": {},
             }
+
+            if is_top_k_supported(model):
+                converse_configuration["additionalModelRequestFields"]["top_k"] = (
+                    generation_params.top_k
+                    if generation_params
+                    else DEFAULT_GENERATION_CONFIG["top_k"]
+                )
+
+            if is_temperature_supported(model):
+                converse_configuration["inferenceConfig"]["temperature"] = (
+                    generation_params.temperature
+                    if generation_params
+                    else DEFAULT_GENERATION_CONFIG["temperature"]
+                )
+
+            if is_top_p_supported(model):
+                converse_configuration["inferenceConfig"]["topP"] = (
+                    generation_params.top_p
+                    if generation_params
+                    else DEFAULT_GENERATION_CONFIG["top_p"]
+                )
 
     # "claude-v4.5-sonnet" cannot specify temperature and top_p together due to specifications.
     # https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-anthropic-claude-messages-request-response.html
