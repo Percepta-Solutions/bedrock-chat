@@ -91,6 +91,7 @@
     "tokenValidMinutes": 30,
     "alternateDomainName": "bots.percepta.com",
     "hostedZoneId": "",
-    "devAccessIamRoleArn": ""
+    "devAccessIamRoleArn": "",
+    "logoPath": "PercLogo.png"
   }
 }
