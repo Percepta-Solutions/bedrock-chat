@@ -64,7 +64,7 @@
     "identityProviders": [{
     "service": "oidc",
     "serviceName": "PingSSO",
-    "secretName": "bedrock-chat/ping-sso"
+    "secretName": "bedrock-chat/ping-sso-prod"
   }],
     "userPoolDomainPrefix": "percepta-bedrockchatv3",
     "allowedSignUpEmailDomains": [],
