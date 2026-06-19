@@ -63,7 +63,7 @@
     "allowedCountries": [],
     "identityProviders": [{
     "service": "oidc",
-    "serviceName": "PingSSO",
+    "serviceName": "Percepta-PingSSO",
     "secretName": "bedrock-chat/ping-sso-prod"
   }],
     "userPoolDomainPrefix": "percepta-bedrockchatv3",
