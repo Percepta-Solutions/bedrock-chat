@@ -381,22 +381,6 @@ def chat(
 
     # Post handling: process the result and update conversation
     return post_process_result(
-            bot=bot,
-            chat_input=chat_input,
-            instructions=instructions,
-            generation_params=generation_params,
-            guardrail=guardrail,
-            display_citation=display_citation,
-            messages=messages,
-            search_results=search_results,
-            on_stream=on_stream,
-            on_thinking=on_thinking,
-            on_tool_result=on_tool_run_result,
-            on_reasoning=on_reasoning,
-        )
-
-    # Post handling: process the result and update conversation
-    return post_process_result(
         result=result,
         message_for_continue_generate=message_for_continue_generate,
         conversation=conversation,
