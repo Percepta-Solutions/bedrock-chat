@@ -89,7 +89,7 @@
     "gpt-oss-120b"],
     "defaultModel": "claude-v4.6-sonnet",
     "tokenValidMinutes": 30,
-    "alternateDomainName": "bots.percepta.com",
+    "alternateDomainName": "",
     "hostedZoneId": "",
     "devAccessIamRoleArn": "",
     "logoPath": "PercLogo.png"
