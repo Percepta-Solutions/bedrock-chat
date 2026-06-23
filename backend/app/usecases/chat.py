@@ -1,3 +1,4 @@
+import json
 import logging
 from typing import Callable
 
@@ -351,6 +352,35 @@ def chat(
 
     else:
         result = converse_legacy(
+            bot=bot,
+            chat_input=chat_input,
+            instructions=instructions,
+            generation_params=generation_params,
+            guardrail=guardrail,
+            display_citation=display_citation,
+            messages=messages,
+            search_results=search_results,
+            on_stream=on_stream,
+            on_thinking=on_thinking,
+            on_tool_result=on_tool_run_result,
+            on_reasoning=on_reasoning,
+        )
+
+    logger.info(json.dumps({
+        "event": "bedrock_invocation",
+        "user_email": user.email,
+        "user_id": user.id,
+        "conversation_id": chat_input.conversation_id,
+        "model": chat_input.message.model,
+        "input_tokens": result["input_token_count"],
+        "output_tokens": result["output_token_count"],
+        "cache_read_input_tokens": result["cache_read_input_count"],
+        "cache_write_input_tokens": result["cache_write_input_count"],
+        "price": result["price"],
+    }))
+
+    # Post handling: process the result and update conversation
+    return post_process_result(
             bot=bot,
             chat_input=chat_input,
             instructions=instructions,
