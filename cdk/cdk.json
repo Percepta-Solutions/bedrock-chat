@@ -64,9 +64,9 @@
     "identityProviders": [{
     "service": "oidc",
     "serviceName": "Percepta-PingSSO",
-    "secretName": "bedrock-chat/ping-sso"
+    "secretName": "bedrock-chat/ping-sso-prod"
   }],
-    "userPoolDomainPrefix": "percdev-bedrockchatv3",
+    "userPoolDomainPrefix": "percepta-bedrockchatv3",
     "allowedSignUpEmailDomains": [],
     "autoJoinUserGroups": ["Percepta"],
     "selfSignUpEnabled": false,
@@ -89,7 +89,7 @@
     "gpt-oss-120b"],
     "defaultModel": "claude-v4.6-sonnet",
     "tokenValidMinutes": 30,
-    "alternateDomainName": "",
+    "alternateDomainName": "bots.percepta.com",
     "hostedZoneId": "",
     "devAccessIamRoleArn": "",
     "logoPath": "PercLogo.png"
