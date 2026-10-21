@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { translations } from '@aws-amplify/ui-react';
 import { Amplify } from 'aws-amplify';
 import { I18n } from 'aws-amplify/utils';
+import '@aws-amplify/ui-react/styles.css';
 import AuthAmplify from './components/AuthAmplify';
 import AuthCustom from './components/AuthCustom';
 import { Authenticator } from '@aws-amplify/ui-react';
@@ -34,15 +35,15 @@ const App: React.FC = () => {
         loginWith: {
           oauth: {
             domain: import.meta.env.VITE_APP_COGNITO_DOMAIN,
-            scopes: ['openid', 'email'],
+            scopes: ['openid', 'email', 'aws.cognito.signin.user.admin'], 
             redirectSignIn: [import.meta.env.VITE_APP_REDIRECT_SIGNIN_URL],
             redirectSignOut: [import.meta.env.VITE_APP_REDIRECT_SIGNOUT_URL],
-            responseType: 'code',
-          },
-        },
-      },
-    },
-  });
+            responseType: 'code'
+          }
+        }
+      }
+    }
+});
 
   I18n.putVocabularies(translations);
   I18n.setLanguage(i18n.language);
